@@ -78,7 +78,7 @@ module MessageTemplates
         txt = "\n[info]"
         txt << "\n#{icontxt}"
         txt << "\nList IMDB's Fan Favourite Movies:"
-        movie_data.sample(7).each do |movie|
+        movie_data.sample(7).sort_by{|m| -m['node']['releaseYear']['year']}.each do |movie|
           txt << "\n\t~O) Phim: #{movie['node']['titleText']['text']}"
           txt << "\n\t\tNăm sản xuất: #{movie['node']['releaseYear']['year']}"
           txt << "\n\t\tRaing: #{movie['node']['ratingsSummary']['aggregateRating']}"
