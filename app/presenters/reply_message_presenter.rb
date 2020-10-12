@@ -18,6 +18,7 @@ class ReplyMessagePresenter
   private
 
   def chatwork_message
-    MessageTemplates::ChatWork.send(message_type, inner_type, json_data})
+    return MessageTemplates::ChatWork.send(:default_message, :action_not_found) unless message_type
+    MessageTemplates::ChatWork.send(message_type, inner_type, json_data)
   end
 end

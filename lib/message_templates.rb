@@ -2,7 +2,20 @@ module MessageTemplates
   class ChatWork
     DEFAULT_MESSAGES = {
       weather: "Không thể lấy được thông tin thời tiết lúc này. (lay2)",
-      movie: "(lay2) \n Không tìm thấy phim thím ơi!"
+      movie: "(lay2) \n Không tìm thấy phim thím ơi!",
+      action_not_found: "(hucau4)\n Bị lỗi gì ấy nhỉ? :v"
+    }
+
+    ICONS = {
+      clear_sky: "(baibien)",
+      few_clouds: "(nghichnuoc)",
+      scattered_clouds: "(tam)",
+      broken_clouds: "(chemgio)",
+      shower_rain: "(sad2)",
+      rain: "(rain2)",
+      thunderstorm: "(shit)",
+      snow: "(retqua)",
+      mist: "(sleep)"
     }
 
     class << self
@@ -31,14 +44,14 @@ module MessageTemplates
         end
       end
 
-      private
-
       def default_message action
         DEFAULT_MESSAGES.dig(action.to_sym)
       end
 
+      private
+
       def current_weather_template json_weather
-        icontxt = json_weather["weather"][0]["main"].downcase === "rain" ?  "(sad2)" : "(baibien)"
+        icontxt = ICONS[json_weather["weather"][0]["main"].downcase.sub(/\s/, "_").to_sym] || "(baibien)"
         txt = "\n[info]"
         txt << "\n#{icontxt}"
         txt << "\nĐịa điểm: #{json_weather["name"]}"
@@ -65,7 +78,7 @@ module MessageTemplates
         txt = "\n[info]"
         txt << "\n#{icontxt}"
         txt << "\nList IMDB's Fan Favourite Movies:"
-        movie_data.each do |movie|
+        movie_data.sample(7).each do |movie|
           txt << "\n\t~O) Phim: #{movie['node']['titleText']['text']}"
           txt << "\n\t\tNăm sản xuất: #{movie['node']['releaseYear']['year']}"
           txt << "\n\t\tRaing: #{movie['node']['ratingsSummary']['aggregateRating']}"

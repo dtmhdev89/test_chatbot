@@ -47,7 +47,7 @@ module Adapter
     def build_sent_message message_action, inner_type, json_data
       rb_message = ReplyMessagePresenter.new(
         {adapter_type: :chatwork, message_type: message_action, inner_type: inner_type},
-        json_data)
+        json_data).get_message
 
       @sent_message = "[rp aid=#{message_params[:account_id]}" +
         " to=#{message_params[:room_id]}-#{message_params[:message_id]}]\n#{rb_message}"

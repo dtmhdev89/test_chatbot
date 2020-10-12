@@ -7,7 +7,7 @@ class OpenMovieApi
   EN_DEFAULT_PARAMS = {
     "query": EN_POST_QUERY_PARAMS,
     "operationName": "FanFavorites",
-    "variables": {"first":10}
+    "variables": {"first":50}
   }
 
   attr_reader :type

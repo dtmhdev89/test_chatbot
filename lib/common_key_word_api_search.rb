@@ -7,7 +7,7 @@ module CommonKeyWordApiSearch
   ANALYZE_HELLO_KEY_WORDS = ["chào", "hello", "hi"].freeze
   ANALYZE_MAJOR_KEY_WORDS = ["phim", "thời"].freeze
   ANALYZE_WEATHER_KEY_WORDS = ["thời tiết"].freeze
-  ANALYZE_MOVIE_KEY_WORDS = ["phim", "phim hay", "phim yêu", "phim mới"].freeze
+  ANALYZE_MOVIE_KEY_WORDS = ["phim gì", "phim hay", "phim yêu", "phim mới"].freeze
 
   ANALYZE_KEY_WORDS = ANALYZE_HELLO_KEY_WORDS + ANALYZE_MAJOR_KEY_WORDS
 
