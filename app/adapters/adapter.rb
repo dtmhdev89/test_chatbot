@@ -11,9 +11,9 @@ module Adapter
     def send_reply_message
       return unless check_validations
       analyzed_list = ChatWorkServices::AnalyzeSearchWordsServices.new(body).analyze
-      rb_message = ChatWorkServices::ApiSearchServices.new(analyzed_list).search
+      message_action, inner_type, json_data = ChatWorkServices::ApiSearchServices.new(analyzed_list).search
       build_uri
-      build_sent_message rb_message
+      build_sent_message message_action, inner_type, json_data
       build_req
 
       res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true) do |http|
@@ -44,7 +44,11 @@ module Adapter
       @uri = URI("https://api.chatwork.com/v2/rooms/#{message_params[:room_id]}/messages")
     end
 
-    def build_sent_message rb_message
+    def build_sent_message message_action, inner_type, json_data
+      rb_message = ReplyMessagePresenter.new(
+        {adapter_type: :chatwork, message_type: message_action, inner_type: inner_type},
+        json_data)
+
       @sent_message = "[rp aid=#{message_params[:account_id]}" +
         " to=#{message_params[:room_id]}-#{message_params[:message_id]}]\n#{rb_message}"
     end
