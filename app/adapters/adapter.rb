@@ -11,7 +11,9 @@ module Adapter
     def send_reply_message
       return unless check_validations
       analyzed_list = ChatWorkServices::AnalyzeSearchWordsServices.new(body).analyze
-      message_action, inner_type, json_data = ChatWorkServices::ApiSearchServices.new(analyzed_list).search
+      message_action, inner_type, json_data = ChatWorkServices::ApiSearchServices.new(analyzed_list, account_id: message_params[:account_id].to_s).search
+
+      #send message to chatwork
       build_uri
       build_sent_message message_action, inner_type, json_data
       build_req

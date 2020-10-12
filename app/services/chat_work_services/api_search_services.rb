@@ -6,7 +6,7 @@ class ChatWorkServices::ApiSearchServices
     movie: 60
   }
 
-  def initialize analyzed_list
+  def initialize analyzed_list, options={}
     @analyzed_list = analyzed_list
     @action_message = CommonKeyWordApiSearch::Messages.new
   end
@@ -41,6 +41,8 @@ class ChatWorkServices::ApiSearchServices
     case m_action
     when :hello
       :hello
+    when :notification
+      handle_notification
     else
       handle_action
     end
@@ -72,5 +74,11 @@ class ChatWorkServices::ApiSearchServices
     model.create!(m_data: json_data, refresh_time: Time.zone.now)
   rescue ActiveRecord::RecordInvalid
     p "something wrong when create #{m_action} data"
+  end
+
+  def handle_notification
+    noti = analyzed_list&.first
+    return unless noti
+    ChatWorkServices::NotificationService.new(noti, options).exec_cmd
   end
 end
