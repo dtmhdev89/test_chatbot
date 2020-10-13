@@ -1,11 +1,17 @@
 class ChatWorkServices::AnalyzeSearchWordsServices
-  attr_accessor :message, :formated_keywords
+  attr_accessor :message, :message_arr, :formated_keywords, :cmd_line
+
+  NOTI_KEYWORDS_STR = CommonKeyWordApiSearch::ANALYZE_NOTIFICATION_KEY_WORDS.join("|")
+  NOTIFICATION_REGEX = /^\[code\](#{NOTI_KEYWORDS_STR})\[\/code\]$/
+  REMOVE_LEADING_TRAILING_REGEX = /(\A[\s\n]+)|([\s\n]+\z)/
 
   def initialize message
-    @message = message&.downcase
+    @message = message
+    @message_arr = message&.gsub(REMOVE_LEADING_TRAILING_REGEX, "")&.split("\n")&.shift()
   end
 
   def analyze
+    return noti_analyzed_list if is_notification_keyword?
     reformat_keywords
     analyze_formated_keywords
   end
@@ -27,7 +33,22 @@ class ChatWorkServices::AnalyzeSearchWordsServices
   end
 
   def reformat_keywords
-    @formated_keywords = message.split("\n")[1].gsub(/[\,\:\;]/, "").split(" ")
+    @formated_keywords = message&.downcase.split("\n")[1].gsub(/[\,\:\;]/, "").split(" ")
       .slice(0, CommonKeyWordApiSearch::FORMATED_LENGTH)
+  end
+
+  def is_notification_keyword?
+    @cmd_line = message_arr[0]&.downcase&.squish
+    @cmd_line.match?(NOTIFICATION_REGEX)
+  end
+
+  def noti_analyzed_list
+    [
+      {
+        key: :notification,
+        str: cmd_line.split(" ").first,
+        cmd_message: message_arr
+      }
+    ]
   end
 end
