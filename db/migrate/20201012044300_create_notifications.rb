@@ -10,7 +10,7 @@ class CreateNotifications < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
-    add_index :notifications, :type
+    add_index :notifications, :schedule_type
     add_index :notifications, [:creator_id, :title_name], unique: true
   end
 end
