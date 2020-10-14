@@ -14,6 +14,7 @@ module TestChatbot
     config.load_defaults 6.0
 
     config.eager_load_paths << Rails.root.join("lib")
+    config.active_job.queue_adapter = :delayed_job
 
     config.generators do |g|
       g.test_framework  false
