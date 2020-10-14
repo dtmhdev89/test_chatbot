@@ -44,6 +44,13 @@ module MessageTemplates
         end
       end
 
+      def notification inner_type="", json_data={}
+        return default_message action if json_data.blank?
+        return error_template json_data["errors"] if json_data["errors"].present?
+        return build_message json_data if json_data["suggestions"].present?
+        json_data["noti_content"]
+      end
+
       def default_message action
         DEFAULT_MESSAGES.dig(action.to_sym)
       end
@@ -85,6 +92,18 @@ module MessageTemplates
           txt << "\n\t\tRaing Count: #{movie['node']['ratingsSummary']['voteCount']}"
         end
         txt << "\n[/info]"
+      end
+
+      def error_template json_errors
+        json_errors.reduce(""){|mess_str, (err_key, err_mess)| mess_str << "#{err_key}: #{err_mess.join(', ')}\n"}
+      end
+
+      def build_message json_data
+        json_data.reduce("") do |mess, (j_key, j_val)|
+          sub_mess = j_val.is_a?(String) ? j_val : j_val.map{|v| v["title_name"]}.join(", ")
+
+          mess << "(lightbulb) #{j_key}: #{sub_mess}\n"
+        end
       end
     end
   end

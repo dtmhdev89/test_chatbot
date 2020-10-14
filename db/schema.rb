@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 2020_10_13_082655) do
     t.string "title_name", null: false
     t.integer "creator_id"
     t.text "noti_content", null: false
-    t.datetime "scheduled_at"
+    t.text "scheduled_at"
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -51,22 +51,16 @@ ActiveRecord::Schema.define(version: 2020_10_13_082655) do
     t.index ["creator_id", "title_name"], name: "index_notifications_on_creator_id_and_title_name", unique: true
   end
 
-  create_table "posts", force: :cascade do |t|
-    t.string "title"
-    t.string "content"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "users", force: :cascade do |t|
-    t.integer "type", default: 0, null: false
+    t.integer "user_type", default: 0, null: false
     t.string "ref_email", null: false
     t.integer "chat_type", default: 0, null: false
     t.string "ref_chat_account", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index "\"chat_type\", \"ref_email\", \"ref_account\"", name: "index_users_on_chat_type_and_ref_email_and_ref_account", unique: true
+    t.index ["chat_type", "ref_email", "ref_chat_account"], name: "index_users_on_chat_type_and_ref_email_and_ref_chat_account", unique: true
+    t.index ["user_type"], name: "index_users_on_user_type"
   end
 
   create_table "weathers", force: :cascade do |t|

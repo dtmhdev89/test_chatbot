@@ -4,6 +4,11 @@ class User < ApplicationRecord
   USER_TYPE = {normal: 0}
   CHAT_TYPE = {chatwork: 0}
 
-  validates :type, :ref_email, :chat_type, :ref_chat_account, presence: true
-  enum type: USER_TYPE
+  enum user_type: USER_TYPE
+  enum chat_type: CHAT_TYPE
+
+  has_many :notifications, foreign_key: :creator_id
+
+  validates :user_type, :ref_email, :chat_type, :ref_chat_account, presence: true
+  validates :ref_chat_account, uniqueness: {scope: [:ref_email, :chat_type]}
 end

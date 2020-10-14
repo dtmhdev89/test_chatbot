@@ -5,7 +5,7 @@ class CreateNotifications < ActiveRecord::Migration[6.0]
       t.string :title_name, null: false
       t.integer :creator_id
       t.text :noti_content, null: false
-      t.datetime :scheduled_at
+      t.text :scheduled_at
       t.datetime :deleted_at
 
       t.timestamps
