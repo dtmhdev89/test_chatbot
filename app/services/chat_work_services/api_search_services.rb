@@ -1,4 +1,5 @@
 class ChatWorkServices::ApiSearchServices
+  attr_reader :options
   attr_accessor :analyzed_list, :action_message, :m_action
 
   UNREQUESTED_TIME = {
@@ -7,6 +8,7 @@ class ChatWorkServices::ApiSearchServices
   }
 
   def initialize analyzed_list, options={}
+    @options = options
     @analyzed_list = analyzed_list
     @action_message = CommonKeyWordApiSearch::Messages.new
   end
@@ -18,7 +20,7 @@ class ChatWorkServices::ApiSearchServices
   private
 
   def get_action_for_analyzed_list
-    @m_action = "";
+    @m_action = ""
     analyzed_list.dup.map do |searchObj|
       @m_action = action_message.send(searchObj[:key].to_sym, searchObj[:str])
       break if @m_action

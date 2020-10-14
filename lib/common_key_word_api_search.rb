@@ -24,7 +24,7 @@ module CommonKeyWordApiSearch
     api_major: :action_major
   }
 
-  class CommonKeyWordApiSearch::Messages
+  class Messages
 
     def action_hello key_word
       :hello
@@ -46,5 +46,7 @@ module CommonKeyWordApiSearch
     ANALYZE_MAJOR_KEY_WORDS.each do |key|
       alias_method key, :action_major
     end
+
+    alias_method :notification, :action_notification
   end
 end

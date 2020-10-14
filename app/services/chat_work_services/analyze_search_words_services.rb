@@ -7,7 +7,8 @@ class ChatWorkServices::AnalyzeSearchWordsServices
 
   def initialize message
     @message = message
-    @message_arr = message&.gsub(REMOVE_LEADING_TRAILING_REGEX, "")&.split("\n")&.shift()
+    @message_arr = message&.gsub(REMOVE_LEADING_TRAILING_REGEX, "")&.split("\n")
+    @message_arr&.shift()
   end
 
   def analyze
@@ -46,8 +47,8 @@ class ChatWorkServices::AnalyzeSearchWordsServices
     [
       {
         key: :notification,
-        str: cmd_line.split(" ").first,
-        cmd_message: message_arr
+        str: cmd_line.gsub(/(\A\[code\]|\[\/code\]\z)/, "").split(" ").first,
+        cmd_message: message_arr[1..-1]
       }
     ]
   end
