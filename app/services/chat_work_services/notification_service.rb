@@ -100,7 +100,7 @@ class ChatWorkServices::NotificationService
   def build_multiline_content idx
     tmp_mess = ""
     cmd_message[idx + 1..- 1].each_with_index do |str, inx|
-      @next_idx = idx + inx + 1
+      @next_idx = idx + inx
       break if str.match?(/\A(xend)/)
       tmp_mess << "#{str}\n"
     end
