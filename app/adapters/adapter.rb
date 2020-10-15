@@ -1,17 +1,23 @@
 module Adapter
   class ChatWorkAdapter
-    attr_reader :message_params, :body
+    attr_reader :message_params, :body, :verification
     attr_accessor :sent_message, :uri, :req
 
     def initialize args
+      @verification = args[:verification]
       @message_params = args[:message_params]
       @body = @message_params[:body]
     end
 
     def send_reply_message
       return unless check_validations
-      analyzed_list = ChatWorkServices::AnalyzeSearchWordsServices.new(body).analyze
-      message_action, inner_type, json_data = ChatWorkServices::ApiSearchServices.new(analyzed_list, account_id: message_params[:account_id].to_s).search
+
+      if verification
+        analyzed_list = ChatWorkServices::AnalyzeSearchWordsServices.new(body).analyze
+        message_action, inner_type, json_data = ChatWorkServices::ApiSearchServices.new(analyzed_list, account_id: message_params[:account_id].to_s).search
+      else
+        message_action = :invalid
+      end
 
       #send message to chatwork
       build_uri
@@ -29,6 +35,16 @@ module Adapter
         p "something wrong"
       end
     end
+
+    class << self
+      def signature_verification req_headers, req_body
+        chw_sign = req_headers.fetch("X-ChatWorkWebhookSignature", "")
+        signature = OpenSSL::HMAC.digest("SHA256", Base64.decode64(ENV.fetch("SIGN_SECRET_KEY", "")), req_body)
+        expected_sign = Base64.strict_encode64(signature)
+        chw_sign == expected_sign
+      end
+    end
+
     private
 
     def check_validations
@@ -60,6 +76,11 @@ module Adapter
       @req['X-ChatWorkToken'] = ChatWork::TOKEN
       @req.set_form_data('body' => sent_message, 'self_unread' => '0')
     end
+
+    def invalid_message
+      MessageTemplates::ChatWork.default_message :not_authorized
+    end
+
   end
 
   class OtherChatAppAdapter

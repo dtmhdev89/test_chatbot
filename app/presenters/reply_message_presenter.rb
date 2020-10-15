@@ -19,6 +19,7 @@ class ReplyMessagePresenter
 
   def chatwork_message
     return MessageTemplates::ChatWork.send(:default_message, :action_not_found) unless message_type
+    return MessageTemplates::ChatWork.send(:default_message, :not_authorized) if message_type == :invalid
     MessageTemplates::ChatWork.send(message_type, inner_type, json_data)
   end
 end
