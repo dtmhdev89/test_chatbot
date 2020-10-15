@@ -3,7 +3,8 @@ module MessageTemplates
     DEFAULT_MESSAGES = {
       weather: "Không thể lấy được thông tin thời tiết lúc này. (lay2)",
       movie: "(lay2) \n Không tìm thấy phim thím ơi!",
-      action_not_found: "(hucau4)\n Bị lỗi gì ấy nhỉ? :v"
+      action_not_found: "(hucau4)\n Bị lỗi gì ấy nhỉ? :v",
+      not_authorized: "Có gì sai sai thì phải? (?)"
     }
 
     ICONS = {
