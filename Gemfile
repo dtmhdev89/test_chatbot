@@ -28,7 +28,6 @@ gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'config'
 gem "paranoia", "~> 2.0"
-gem "delayed_job"
 gem "delayed_job_active_record"
 gem "daemons"
 gem "whenever", require: false

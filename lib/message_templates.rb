@@ -108,4 +108,36 @@ module MessageTemplates
       end
     end
   end
+
+  class FbMessenger
+    include FbMessengerApiReferences
+
+    protected
+
+    def self.build_reponse data={}
+      analyze_params SendApi.get_params_structure, data
+    end
+
+    private
+
+    class << self
+      def analyze_params default_params, data={}
+        default_params[:recipient][:id] = data.dig("sender", "id")
+        message_type = get_message_type(data["message"]).first
+        default_params[:message][message_type] = get_response_by_message_type message_type
+        default_params
+      end
+
+      def get_message_type data_message
+        data_message.symbolize_keys.keys & FbMessengerApiReferences::SendApi::MESSAGE_TYPE.keys
+      end
+
+      def get_response_by_message_type message_type
+        case message_type
+        when :text
+          "Hello World"
+        end
+      end
+    end
+  end
 end
