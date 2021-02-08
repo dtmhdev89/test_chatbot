@@ -18,7 +18,7 @@ class FbsWebhooksController < ApplicationController
   def verify_webhook
     return render json: {status: :failed}, status: 403 if !valid_condition
 
-    render json: {status: :verify_success}, status: 200
+    render plain: @challenge.to_s, status: :ok
   end
 
   def handle_event
