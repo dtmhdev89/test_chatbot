@@ -24,7 +24,7 @@ class FbsWebhooksController < ApplicationController
   def handle_event
     return render json: {status: :not_found}, status: :not_found if !(@object === FbsMessenger::VERIFY_OBJECT)
 
-    render json: {status: :success, entries: @entries.map{|entry| entry["messaging"]}.flatten}, status: 200
+    render plain: nil,status: 200
   end
 
   def valid_condition
