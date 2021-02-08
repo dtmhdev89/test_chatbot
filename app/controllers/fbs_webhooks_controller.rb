@@ -40,6 +40,6 @@ class FbsWebhooksController < ApplicationController
 
   def load_post_data
     @object = params["object"]
-    @entries = params["entry"]
+    @entries = params["entry"][0]
   end
 end
