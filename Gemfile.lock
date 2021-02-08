@@ -261,7 +261,6 @@ DEPENDENCIES
   capybara (>= 2.15)
   config
   daemons
-  delayed_job
   delayed_job_active_record
   dotenv-rails
   jbuilder (~> 2.7)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_13_082655) do
+ActiveRecord::Schema.define(version: 2021_02_08_133924) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
@@ -47,13 +47,13 @@ ActiveRecord::Schema.define(version: 2020_10_13_082655) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index "\"type\"", name: "index_notifications_on_type"
     t.index ["creator_id", "title_name"], name: "index_notifications_on_creator_id_and_title_name", unique: true
+    t.index ["schedule_type"], name: "index_notifications_on_schedule_type"
   end
 
   create_table "users", force: :cascade do |t|
     t.integer "user_type", default: 0, null: false
-    t.string "ref_email", null: false
+    t.string "ref_email"
     t.integer "chat_type", default: 0, null: false
     t.string "ref_chat_account", null: false
     t.datetime "deleted_at"

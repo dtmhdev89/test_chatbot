@@ -1,8 +1,8 @@
-Delayed::Worker.sleep_delay = 45
+Delayed::Worker.sleep_delay = 10
 Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'delayed_job.log'))
 Delayed::Worker.destroy_failed_jobs = false
-Delayed::Worker.max_attempts = 5
-Delayed::Worker.max_run_time = 15.minutes
+Delayed::Worker.max_attempts = 2
+Delayed::Worker.max_run_time = 5.minutes
 Delayed::Worker.queue_attributes = {
   high_prio: { priority: -5 },
   normal_prior: { priority: 0 },
