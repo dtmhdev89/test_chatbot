@@ -18,7 +18,9 @@ class FbsWebhooksController < ApplicationController
   def verify_webhook
     return render json: {status: :failed}, status: 403 if !valid_condition
 
-    HandleResponseFbMessengerJob.new(@entries["messaging"][0]).perform_later
+    p "============================ handle response fb messenger data"
+    p "============================ #{@entries["messaging"][0]}"
+    HandleResponseFbMessengerJob.perform_later @entries["messaging"][0]
     render plain: @challenge.to_s, status: :ok
   end
 
