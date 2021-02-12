@@ -27,7 +27,7 @@ class FbsWebhooksController < ApplicationController
 
     p "============================ handle response fb messenger data"
     p "============================ #{@entries["messaging"][0]}"
-    HandleResponseFbMessengerJob.perform_later @entries["messaging"][0]
+    HandleResponseFbMessengerJob.perform_later @entries["messaging"][0].permit(messaging_permit_params)
 
     render plain: nil,status: 200
   end
@@ -45,5 +45,9 @@ class FbsWebhooksController < ApplicationController
   def load_post_data
     @object = params["object"]
     @entries = params["entry"][0]
+  end
+
+  def messaging_permit_params
+    FbMessengerApiReferences::SendApi.permit_params
   end
 end

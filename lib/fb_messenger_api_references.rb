@@ -40,9 +40,17 @@ module FbMessengerApiReferences
       notification_type: NOTFICATION_TYPE[:regular]
     }.freeze
 
+    PERMIT_PARAMS = {
+      messaging: [:timestamp, sender: [:id], recipient: [:id], message: MESSAGE_TYPE.keys]
+    }.freeze
+
     class << self
       def get_params_structure
         COMMON_PARAMS
+      end
+
+      def permit_params
+        PERMIT_PARAMS[:messaging]
       end
     end
   end
