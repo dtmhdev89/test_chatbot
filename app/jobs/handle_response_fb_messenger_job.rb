@@ -5,7 +5,7 @@ class HandleResponseFbMessengerJob < ApplicationJob
 
   def perform params={}
     p "================ do job ::::: #{params}"
-    return if check_required_params.any?(false)
+    return if check_required_params(params).any?(false)
     user = User.find_or_create_by! ref_chat_account: params.dig("sender", "id")
 
     json_response = FbsMessenger.get_response_template params
@@ -25,7 +25,7 @@ class HandleResponseFbMessengerJob < ApplicationJob
     end
   end
 
-  def check_required_params
+  def check_required_params params
     ["sender", "message"].map{|key| params[key].present?}
   end
 end
