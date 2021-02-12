@@ -114,7 +114,9 @@ module MessageTemplates
 
     def self.build_reponse data={}
       p "=============== build_reponse data #{data}"
-      analyze_params FbMessengerApiReferences::SendApi.get_params_structure, data
+      result = analyze_params FbMessengerApiReferences::SendApi.get_params_structure, data
+      p "=============== result after analyze_params #{result}"
+      result
     end
 
     private
