@@ -41,7 +41,10 @@ module FbMessengerApiReferences
     }.freeze
 
     PERMIT_PARAMS = {
-      messaging: [:timestamp, sender: [:id], recipient: [:id], message: MESSAGE_TYPE.keys]
+      messaging: [
+        :timestamp, sender: [:id], recipient: [:id],
+        message: [:mid, :text, quick_reply: {} , reply_to: {}, attachments: [:type, payload: {}]]
+      ]
     }.freeze
 
     class << self
