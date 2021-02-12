@@ -18,14 +18,16 @@ class FbsWebhooksController < ApplicationController
   def verify_webhook
     return render json: {status: :failed}, status: 403 if !valid_condition
 
-    p "============================ handle response fb messenger data"
-    p "============================ #{@entries["messaging"][0]}"
-    HandleResponseFbMessengerJob.perform_later @entries["messaging"][0]
     render plain: @challenge.to_s, status: :ok
   end
 
   def handle_event
+    p "============ handle event"
     return render json: {status: :not_found}, status: :not_found if !(@object === FbsMessenger::VERIFY_OBJECT)
+
+    p "============================ handle response fb messenger data"
+    p "============================ #{@entries["messaging"][0]}"
+    HandleResponseFbMessengerJob.perform_later @entries["messaging"][0]
 
     render plain: nil,status: 200
   end
