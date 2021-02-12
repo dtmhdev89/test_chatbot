@@ -22,6 +22,7 @@ class HandleResponseFbMessengerJob < ApplicationJob
     when Net::HTTPSuccess, Net::HTTPRedirection
       p "OK"
     else
+      p "============== response body: #{res.body}"
       p "something wrong"
     end
   end
