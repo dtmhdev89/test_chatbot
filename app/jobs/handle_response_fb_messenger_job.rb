@@ -9,6 +9,7 @@ class HandleResponseFbMessengerJob < ApplicationJob
     user = User.find_or_create_by! ref_chat_account: params.dig("sender", "id")
 
     json_response = FbsMessenger.get_response_template params
+    p "=========== json_response: #{json_response}"
     uri = URI("https://graph.facebook.com/v9.0/me/messages?access_token=#{ENV['FBS_ACCESS_TOKEN']}")
     req = Net::HTTP::Post.new(uri)
     req['content-type'] = "application/json"
