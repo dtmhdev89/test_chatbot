@@ -110,12 +110,11 @@ module MessageTemplates
   end
 
   class FbMessenger
-    include FbMessengerApiReferences
-
     protected
 
     def self.build_reponse data={}
-      analyze_params SendApi.get_params_structure, data
+      p "=============== build_reponse data #{data}"
+      analyze_params FbMessengerApiReferences::SendApi.get_params_structure, data
     end
 
     private
