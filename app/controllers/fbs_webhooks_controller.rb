@@ -26,8 +26,8 @@ class FbsWebhooksController < ApplicationController
     return render json: {status: :not_found}, status: :not_found if !(@object === FbsMessenger::VERIFY_OBJECT)
 
     p "============================ handle response fb messenger data"
-    p "============================ #{@entries["messaging"][0].permit(messaging_permit_params)}"
-    HandleResponseFbMessengerJob.perform_later @entries["messaging"][0].permit(messaging_permit_params)
+    p "============================ #{@entries["messaging"][0].permit(messaging_permit_params).as_json}"
+    HandleResponseFbMessengerJob.perform_later @entries["messaging"][0].permit(messaging_permit_params).as_json
 
     render plain: nil,status: 200
   end

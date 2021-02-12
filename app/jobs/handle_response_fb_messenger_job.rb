@@ -4,6 +4,7 @@ class HandleResponseFbMessengerJob < ApplicationJob
   queue_as :high_prio
 
   def perform params={}
+    p "================ do job ::::: #{params}"
     user = User.find_or_create_by! ref_chat_account: params.dig("sender", "id")
 
     json_response = FbsMessenger.get_response_template params
