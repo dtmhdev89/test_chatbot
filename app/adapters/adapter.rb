@@ -80,7 +80,95 @@ module Adapter
     def invalid_message
       MessageTemplates::ChatWork.default_message :not_authorized
     end
+  end
 
+  class FbsAdapter
+    attr_reader :params
+    attr_accessor :sent_message, :uri, :req
+
+    def initialize params
+      @params = params
+    end
+
+    def send_reply_message
+      analyzed_list = FbsServices::AnalyzeSearchWordsService.new(params["message"]["text"]).analyze
+      message_action, inner_type, json_data = FbsServices::ApiSearchService.new(analyzed_list).search
+
+      #send message to sender
+      build_uri
+      build_sent_message message_action, inner_type, json_data
+      build_req
+
+      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true) do |http|
+        http.request(req)
+      end
+
+      case res
+      when Net::HTTPSuccess, Net::HTTPRedirection
+        p "OK"
+      else
+        p "==========API SEND ERRORS::::something wrong:: #{res.body}"
+      end
+    end
+
+    def send_action_state
+      #send message to sender
+      build_uri
+      build_sender_action
+      build_req
+
+      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true) do |http|
+        http.request(req)
+      end
+
+      case res
+      when Net::HTTPSuccess, Net::HTTPRedirection
+        p "OK"
+      else
+        p "==========API SEND ERRORS::::something wrong:: #{res.body}"
+      end
+    end
+
+    private
+
+    def build_uri
+      @uri = URI("https://graph.facebook.com/v9.0/me/messages?access_token=#{ENV['FBS_ACCESS_TOKEN']}")
+    end
+
+    def build_sent_message message_action, inner_type, json_data
+      rb_message = ReplyMessagePresenter.new(
+        {adapter_type: :fbs, message_type: message_action, inner_type: inner_type},
+        json_data).get_message
+
+      @sent_message = get_response_json :message, FbMessengerApiReferences::SendApi.get_params_structure, rb_message, params
+    end
+
+    def build_req
+      @req = Net::HTTP::Post.new(uri)
+      @req['content-type'] = "application/json"
+      @req.body = sent_message
+    end
+
+    def get_response_json type, default_params, rb_message="", data={}
+      default_params[:recipient][:id] = data.dig("sender", "id")
+      if type == :sender_action
+        default_params.delete :message
+        default_params[:sender_action] = FbMessengerApiReferences::SendApi::SENDER_ACTION[:typing_on]
+      else
+        message_type = get_message_type(data["message"]).first || :text
+        default_params[:message][message_type] = rb_message
+      end
+
+      default_params.to_json
+    end
+
+    def get_message_type data_message
+      data_message.symbolize_keys.keys & FbMessengerApiReferences::SendApi::MESSAGE_TYPE.keys
+    end
+
+    def build_sender_action
+      @sent_message = get_response_json :sender_action, FbMessengerApiReferences::SendApi.get_params_structure, nil, params
+    end
   end
 
   class OtherChatAppAdapter
