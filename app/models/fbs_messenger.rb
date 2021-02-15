@@ -7,8 +7,4 @@ class FbsMessenger
   VERIFY_TOKEN = ENV["FBS_TOKEN"].freeze
   VERIFY_MODE = "subscribe".freeze
   VERIFY_OBJECT = "page".freeze
-
-  def self.get_response_template data={}
-    MessageTemplates::FbMessenger.build_reponse data
-  end
 end
