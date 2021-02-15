@@ -9,6 +9,7 @@ module CommonKeyWordApiSearch
   ANALYZE_NOTIFICATION_KEY_WORDS = ["create notification", "update notification", "delete notification",
     "find notification"
   ]
+  ANALYZE_CMD_KEY_WORDS = ["ask", "search"].freeze
   ANALYZE_KEY_WORDS = ANALYZE_TALK_KEY_WORDS + ANALYZE_MAJOR_KEY_WORDS
 
   ANALYZE_WEATHER_KEY_WORDS = ["thời tiết"].freeze

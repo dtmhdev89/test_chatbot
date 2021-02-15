@@ -19,7 +19,7 @@ module FbMessengerApiReferences
       mark_seen: "mark_seen"
     }.freeze
 
-    NOTFICATION_TYPE = {
+    NOTIFICATION_TYPE = {
       regular: "REGULAR",
       silent_push: "SILENT_PUSH",
       no_push: "NO_PUSH"
@@ -37,8 +37,8 @@ module FbMessengerApiReferences
         id: nil
       },
       message: {},
-      notification_type: NOTFICATION_TYPE[:regular]
-    }.freeze
+      notification_type: NOTIFICATION_TYPE[:regular]
+    }
 
     PERMIT_PARAMS = {
       messaging: [

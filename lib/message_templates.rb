@@ -110,34 +110,105 @@ module MessageTemplates
   end
 
   class FbMessenger
+
+    FBS_COMMON_ICONS = {
+      cry: "😭",
+      cool: "😎",
+      love_eyes: "😍",
+      blame: "😝",
+      l_magnifying_glass: "🔍",
+      movie: "📽",
+      smile: "😃"
+    }
+
+    WEATHER_ICONS = {
+      clear_sky: "☀️",
+      few_clouds: "🌤",
+      scattered_clouds: "⛅️",
+      broken_clouds: "☁️",
+      shower_rain: "🌦",
+      rain: "🌧",
+      thunderstorm: "⛈",
+      snow: "❄️",
+      mist: "🌨",
+      star: "⭐️"
+    }
+
+    DEFAULT_MESSAGES = {
+      weather: "Không thể lấy được thông tin thời tiết lúc này. #{FBS_COMMON_ICONS[:cry]}",
+      movie: "#{FBS_COMMON_ICONS[:cry]} \n Không tìm thấy phim thím ơi!",
+      action_not_found: "#{FBS_COMMON_ICONS[:cry]}\n Bị lỗi gì ấy nhỉ? :v",
+      not_authorized: "Có gì sai sai thì phải? #{FBS_COMMON_ICONS[:cry]}"
+    }
+
     protected
 
-    def self.build_reponse data={}
-      p "=============== build_reponse data #{data}"
-      result = analyze_params FbMessengerApiReferences::SendApi.get_params_structure, data
-      p "=============== result after analyze_params #{result}"
-      result
-    end
-
-    private
-
     class << self
-      def analyze_params default_params, data={}
-        default_params[:recipient][:id] = data.dig("sender", "id")
-        message_type = get_message_type(data["message"]).first
-        default_params[:message][message_type] = get_response_by_message_type message_type
-        default_params
+      def hello inner_type="", json_data={}
+        ["chào bạn", "yeap, boom!! (quaylen)", "(hi)", "hi! my sugar baby!"].sample
       end
 
-      def get_message_type data_message
-        data_message.symbolize_keys.keys & FbMessengerApiReferences::SendApi::MESSAGE_TYPE.keys
-      end
+      def weather inner_type="", json_weather={}
+        return default_message action if inner_type.empty? || json_weather.blank?
 
-      def get_response_by_message_type message_type
-        case message_type
-        when :text
-          "Hello World"
+        case inner_type
+        when :current
+          current_weather_template json_weather
+        when :seven_days
+          seven_days_weather_template json_weather
         end
+      end
+
+      def movie inner_type="", json_movie={}
+        return default_message action if inner_type.empty? || json_movie.blank?
+
+        case inner_type
+        when :vi
+        when :en
+          movie_en json_movie
+        end
+      end
+
+      def default_message action
+        DEFAULT_MESSAGES.dig(action.to_sym)
+      end
+
+      private
+
+      def current_weather_template json_weather
+        icontxt = WEATHER_ICONS[json_weather["weather"][0]["main"].downcase.sub(/\s/, "_").to_sym] || WEATHER_ICONS[:star]
+        txt = "\n#{FBS_COMMON_ICONS[:l_magnifying_glass]}"
+        txt << "\n#{icontxt}"
+        txt << "\nĐịa điểm: #{json_weather["name"]}"
+        txt << "\nThông tin thời tiết:"
+        txt << "\n\tTrạng thái: #{json_weather["weather"][0]["main"]}"
+        txt << "\n\tMô tả: #{json_weather["weather"][0]["description"]}"
+        txt << "\n\tNhiệt độ: #{json_weather["main"]["temp"]}"
+        txt << "\n\tNhiệt độ cảm nhận: #{json_weather["main"]["feels_like"]}"
+        txt << "\n\tÁp suất: #{json_weather["main"]["pressure"]}"
+        txt << "\n\tĐộ ẩm: #{json_weather["main"]["humidity"]}"
+        txt << "\n\tTốc độ gió: #{json_weather["wind"]["speed"]}"
+        txt << "\n=========="
+      end
+
+      def seven_days_weather_template json_weather
+      end
+
+      def movie_vi
+      end
+
+      def movie_en json_movie
+        movie_data = json_movie["data"]["fanPicksTitles"]["edges"]
+        icontxt = "#{FBS_COMMON_ICONS[:movie]}"
+        txt = "\n#{FBS_COMMON_ICONS[:l_magnifying_glass]}"
+        txt << "\nList IMDB's Fan Favourite Movies:"
+        movie_data.sample(7).sort_by{|m| -m['node']['releaseYear']['year']}.each do |movie|
+          txt << "\n\t#{icontxt} Phim: #{movie['node']['titleText']['text']}"
+          txt << "\n\t\tNăm sản xuất: #{movie['node']['releaseYear']['year']}"
+          txt << "\n\t\tRaing: #{movie['node']['ratingsSummary']['aggregateRating']}"
+          txt << "\n\t\tRaing Count: #{movie['node']['ratingsSummary']['voteCount']}"
+        end
+        txt << "\n=========="
       end
     end
   end
