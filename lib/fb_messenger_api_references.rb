@@ -49,7 +49,7 @@ module FbMessengerApiReferences
 
     class << self
       def get_params_structure
-        COMMON_PARAMS
+        COMMON_PARAMS.deep_dup
       end
 
       def permit_params
